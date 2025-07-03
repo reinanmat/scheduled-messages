@@ -1,0 +1,12 @@
+version: 1
+common:
+  resourcesPath: ./components/
+apps:
+  - appID: scheduler
+    appDirPath: .
+    command: ["uvicorn", "scheduler.app:app", "--port", "8001"]
+    appPort: 8001
+  - appID: api
+    appDirPath: .
+    appPort: 8000
+    command: ["uvicorn", "api.app:app", "--port", "8000"]

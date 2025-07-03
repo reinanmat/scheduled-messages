@@ -1,0 +1,61 @@
+import json
+from dapr.clients import DaprClient
+from dapr.ext.fastapi import DaprApp
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+from common.logger import logger
+from scheduler.worker import process_messages
+
+
+class MessageReceiver(BaseModel):
+    datacontenttype: str
+    source: str
+    topic: str
+    pubsubname: str
+    data: dict
+    id: str
+    specversion: str
+    tracestate: str
+    type: str
+    traceid: str
+
+
+app = FastAPI()
+dapr_app = DaprApp(app)
+
+def add_key_to_index(client: DaprClient, key: str):
+    index_key = "message_index"
+    try:
+        raw_index = client.get_state(store_name="statestore", key=index_key).data
+        if raw_index:
+            index = json.loads(raw_index)
+        else:
+            index = []
+    except Exception:
+        index = []
+
+    if key not in index:
+        index.append(key)
+        client.save_state(store_name="statestore", key=index_key, value=json.dumps(index))
+
+@dapr_app.subscribe(pubsub='messagebus', topic='messagescheduled')
+def messages_subscriber(event: MessageReceiver):
+    print('subscribe received : %s' % event.data['message_id'], flush=True)
+
+    with DaprClient() as client:
+        key = f"message:{event.data['message_id']}"
+        value = json.dumps(event.data)
+        client.save_state(store_name='statestore', key=key, value=value)
+
+        add_key_to_index(client, key)
+
+    return { 'success' : True }
+
+
+@app.post("/cron")
+async def cron_event():
+    logger.info('Cron event calling')
+    await process_messages()
+    logger.info('Cron event finish')
+    return {"status": "done"}

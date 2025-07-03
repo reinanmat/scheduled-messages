@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from app.settings import Settings
-from app.models import table_registry
+from common.settings import Settings
+from api.models import table_registry
 
 settings = Settings()
 

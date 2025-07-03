@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
-from app.logger import logger
-from app.models import ScheduledMessage
-from app.schemas import MessageCreate
+from common.logger import logger
+
+from api.models import ScheduledMessage
+from api.schemas import MessageCreate
+from api.dapr_client import publish_message_scheduled
 
 
 def create_scheduled_message(db: Session, msg: MessageCreate):
@@ -13,6 +15,9 @@ def create_scheduled_message(db: Session, msg: MessageCreate):
         db.add(message)
         db.commit()
         db.refresh(message)
+
+        publish_message_scheduled(message)
+
         return message
     except Exception as e:
         logger.info(f"Error: failed to create a message: {e}")

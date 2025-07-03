@@ -1,0 +1,61 @@
+Starting Dapr with id api. HTTP Port: 40377. gRPC Port: 39827
+Updating metadata for cliPID: 5281
+time="2025-07-03T17:50:21.048177068-03:00" level=info msg="Starting Dapr Runtime -- version 1.15.1 -- commit 2ba4bf3926c8b74182181969adafea3477b3b7ed" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.048199471-03:00" level=info msg="Log level set to: info" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.048408648-03:00" level=warning msg="mTLS is disabled. Skipping certificate request and tls validation" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.security type=log ver=1.15.1
+time="2025-07-03T17:50:21.048701557-03:00" level=info msg="Enabled features: SchedulerReminders" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.048750931-03:00" level=info msg="metric spec: {\"enabled\":true}" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.diagnostics type=log ver=1.15.1
+time="2025-07-03T17:50:21.048770037-03:00" level=info msg="Using default latency distribution buckets: [1 2 3 4 5 6 8 10 13 16 20 25 30 40 50 65 80 100 130 160 200 250 300 400 500 650 800 1000 2000 5000 10000 20000 50000 100000]" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.diagnostics type=log ver=1.15.1
+time="2025-07-03T17:50:21.049040533-03:00" level=warning msg="The default value for 'spec.metric.http.increasedCardinality' will change to 'false' in Dapr 1.15 or later" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.diagnostics type=log ver=1.15.1
+time="2025-07-03T17:50:21.049571412-03:00" level=info msg="Attempting to connect to scheduler: localhost:50006" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.scheduler type=log ver=1.15.1
+time="2025-07-03T17:50:21.049620038-03:00" level=info msg="metrics server started on 0.0.0.0:37665/" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.04967831-03:00" level=info msg="standalone mode configured" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.049686806-03:00" level=info msg="app id: api" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.049728656-03:00" level=info msg="Dapr trace sampler initialized: ParentBased{root:AlwaysOnSampler,remoteParentSampled:AlwaysOnSampler,remoteParentNotSampled:AlwaysOffSampler,localParentSampled:AlwaysOnSampler,localParentNotSampled:AlwaysOffSampler}" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.049885675-03:00" level=info msg="local service entry announced: api -> 172.17.175.115:34071" app_id=api component="nr (mdns/v1)" instance=DESKTOP-3DROC2S scope=dapr.contrib type=log ver=1.15.1
+time="2025-07-03T17:50:21.049901435-03:00" level=info msg="Initialized name resolution to mdns" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.049936011-03:00" level=info msg="Loading components…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.051444869-03:00" level=info msg="successful init for input binding (cron (bindings.cron/v1))" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.processor.binding type=log ver=1.15.1
+time="2025-07-03T17:50:21.051471109-03:00" level=info msg="Component loaded: cron (bindings.cron/v1)" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.processor type=log ver=1.15.1
+time="2025-07-03T17:50:21.052252135-03:00" level=info msg="Received scheduler hosts addresses: [localhost:50006]" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.scheduler type=log ver=1.15.1
+time="2025-07-03T17:50:21.053076528-03:00" level=info msg="Component loaded: messagebus (pubsub.redis/v1)" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.processor type=log ver=1.15.1
+time="2025-07-03T17:50:21.053184714-03:00" level=info msg="Scheduler client initialized for address: localhost:50006" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.scheduler.clients type=log ver=1.15.1
+time="2025-07-03T17:50:21.053195545-03:00" level=info msg="Waiting for all outstanding components to be processed…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.053209541-03:00" level=info msg="Scheduler clients initialized" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.scheduler.clients type=log ver=1.15.1
+time="2025-07-03T17:50:21.055417927-03:00" level=info msg="Component loaded: statestore (state.redis/v1)" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.processor type=log ver=1.15.1
+time="2025-07-03T17:50:21.055437063-03:00" level=info msg="All outstanding components processed" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.055445449-03:00" level=info msg="Loading endpoints…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.055637155-03:00" level=info msg="Waiting for all outstanding http endpoints to be processed…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.055669627-03:00" level=info msg="All outstanding http endpoints processed" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.055683824-03:00" level=info msg="Loading Declarative Subscriptions…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.05603814-03:00" level=info msg="gRPC server listening on TCP address: :39827" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.api type=log ver=1.15.1
+time="2025-07-03T17:50:21.056051766-03:00" level=info msg="Enabled gRPC tracing middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.api type=log ver=1.15.1
+time="2025-07-03T17:50:21.056066584-03:00" level=info msg="Enabled gRPC metrics middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.api type=log ver=1.15.1
+time="2025-07-03T17:50:21.056131027-03:00" level=info msg="Registering workflow engine for gRPC endpoint: [::]:39827" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.api type=log ver=1.15.1
+time="2025-07-03T17:50:21.056173899-03:00" level=info msg="API gRPC server is running on port 39827" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.056215949-03:00" level=warning msg="The default value for 'spec.metric.http.increasedCardinality' will change to 'false' in Dapr 1.15 or later" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:21.056275904-03:00" level=info msg="Enabled max body size HTTP middleware with size 4194304 bytes" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:21.05628438-03:00" level=info msg="Enabled tracing HTTP middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:21.05629005-03:00" level=info msg="Enabled metrics HTTP middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:21.056524107-03:00" level=info msg="HTTP server listening on TCP address: :40377" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:21.056566047-03:00" level=info msg="HTTP server is running on port 40377" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.056579994-03:00" level=info msg="The request body size parameter is: 4194304 bytes" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.05660454-03:00" level=info msg="gRPC server listening on TCP address: :34071" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.internal type=log ver=1.15.1
+time="2025-07-03T17:50:21.056615391-03:00" level=info msg="Enabled gRPC tracing middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.internal type=log ver=1.15.1
+time="2025-07-03T17:50:21.056626773-03:00" level=info msg="Enabled gRPC metrics middleware" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.grpc.internal type=log ver=1.15.1
+time="2025-07-03T17:50:21.056675426-03:00" level=info msg="Internal gRPC server is running on :34071" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.056718758-03:00" level=info msg="actors: state store is not configured - this is okay for clients but services with hosted actors will fail to initialize!" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.05674591-03:00" level=info msg="application protocol: http. waiting on port 8000.  This will block until the app is listening on that port." app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:21.05679217-03:00" level=info msg="Actor runtime disabled: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \"true\" in your state store component file?" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.actor type=log ver=1.15.1
+Updating metadata for app command: uvicorn app:app --port 8000
+Updating metadata for appPID: 5313
+You're up and running! Dapr logs will appear here.
+
+time="2025-07-03T17:50:24.003087093-03:00" level=info msg="Received signal 'interrupt'; beginning shutdown" app_id=api instance=DESKTOP-3DROC2S scope=dapr.signals type=log ver=1.15.1
+time="2025-07-03T17:50:24.003245315-03:00" level=info msg="Dapr is shutting down" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:24.003818904-03:00" level=info msg="Shutting down component statestore (state.redis/v1)" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime type=log ver=1.15.1
+time="2025-07-03T17:50:24.003414573-03:00" level=info msg="Closing HTTP server [::]:40377…" app_id=api instance=DESKTOP-3DROC2S scope=dapr.runtime.http type=log ver=1.15.1
+time="2025-07-03T17:50:24.003496429-03:00" level=info msg="stopping mDNS server for app id: api" app_id=api component="nr (mdns/v1)" instance=DESKTOP-3DROC2S scope=dapr.contrib type=log ver=1.15.1
+
+termination signal received: shutting down
+Exited Dapr successfully

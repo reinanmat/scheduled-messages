@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from common.logger import logger
+from common.settings import Settings
 from scheduler.worker import process_messages
 
 
@@ -23,11 +24,12 @@ class MessageReceiver(BaseModel):
 
 app = FastAPI()
 dapr_app = DaprApp(app)
+settings = Settings()
 
 def add_key_to_index(client: DaprClient, key: str):
     index_key = "message_index"
     try:
-        raw_index = client.get_state(store_name="statestore", key=index_key).data
+        raw_index = client.get_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key).data
         if raw_index:
             index = json.loads(raw_index)
         else:
@@ -37,16 +39,16 @@ def add_key_to_index(client: DaprClient, key: str):
 
     if key not in index:
         index.append(key)
-        client.save_state(store_name="statestore", key=index_key, value=json.dumps(index))
+        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key, value=json.dumps(index))
 
-@dapr_app.subscribe(pubsub='messagebus', topic='messagescheduled')
+@dapr_app.subscribe(pubsub=settings.DAPR_PUBSUB_NAME, topic=settings.DAPR_TOPIC_NAME)
 def messages_subscriber(event: MessageReceiver):
     print('subscribe received : %s' % event.data['message_id'], flush=True)
 
     with DaprClient() as client:
         key = f"message:{event.data['message_id']}"
         value = json.dumps(event.data)
-        client.save_state(store_name='statestore', key=key, value=value)
+        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=key, value=value)
 
         add_key_to_index(client, key)
 

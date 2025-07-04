@@ -2,6 +2,10 @@ import json
 from dapr.clients import DaprClient
 from datetime import datetime, timedelta, timezone
 from common.logger import logger
+from common.settings import Settings
+
+
+settings = Settings()
 
 async def process_messages():
     logger.info('[CRON] Processing started')
@@ -10,7 +14,7 @@ async def process_messages():
     next_minute = now + timedelta(minutes=1)
 
     with DaprClient() as client:
-        index_state = client.get_state(store_name="statestore", key="message_index").data
+        index_state = client.get_state(store_name=settings.DAPR_STATESTORE_NAME, key="message_index").data
 
         if not index_state:
             logger.info('[CRON] No messages indexed')
@@ -25,7 +29,7 @@ async def process_messages():
         remaining_keys = []
 
         for key in message_keys:
-            state = client.get_state(store_name='statestore', key=key)
+            state = client.get_state(store_name=settings.DAPR_STATESTORE_NAME, key=key)
             if not state.data:
                 continue
 
@@ -48,10 +52,10 @@ async def process_messages():
 
             if now <= scheduled_time <= next_minute:
                 logger.info(f'[CRON] Sending scheduled message: "{data["content"]}" at {scheduled_time.isoformat()}')
-                client.delete_state(store_name='statestore', key=key)
+                client.delete_state(store_name=settings.DAPR_STATESTORE_NAME, key=key)
             else:
                 remaining_keys.append(key)
 
-        client.save_state(store_name='statestore', key='message_index', value=json.dumps(remaining_keys))
+        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key='message_index', value=json.dumps(remaining_keys))
 
     logger.info('[CRON] Processing finished')

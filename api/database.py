@@ -5,7 +5,6 @@ from common.settings import Settings
 from api.models import table_registry
 
 settings = Settings()
-
 engine = create_engine(settings.DATABASE_URL)
 
 

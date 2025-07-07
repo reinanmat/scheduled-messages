@@ -1,10 +1,11 @@
 import json
-from dapr.clients import DaprClient
+from dapr.clients import DaprClient, StateItem
 from dapr.ext.fastapi import DaprApp
 from fastapi import FastAPI
 
 from common.logger import logger
 from common.settings import Settings
+from common.time import serialize_scheduled_message
 from scheduler.schemas import MessageReceiver
 from scheduler.worker import process_messages
 
@@ -13,31 +14,24 @@ app = FastAPI()
 dapr_app = DaprApp(app)
 settings = Settings()
 
-def add_key_to_index(client: DaprClient, key: str):
-    index_key = "message_index"
-    try:
-        raw_index = client.get_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key).data
-        if raw_index:
-            index = json.loads(raw_index)
-        else:
-            index = []
-    except Exception:
-        index = []
-
-    if key not in index:
-        index.append(key)
-        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key, value=json.dumps(index))
-
 @dapr_app.subscribe(pubsub=settings.DAPR_PUBSUB_NAME, topic=settings.DAPR_TOPIC_NAME)
 def messages_subscriber(event: MessageReceiver):
-    print('subscribe received : %s' % event.data['message_id'], flush=True)
+    logger.info(f'subscriber received : {event.data["message_id"]}')
 
     with DaprClient() as client:
         key = f"message:{event.data['message_id']}"
-        value = json.dumps(event.data)
-        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=key, value=value)
+        value = serialize_scheduled_message(
+            message_id=event.data["message_id"],
+            content=event.data["content"],
+            scheduled_time=event.data["scheduled_time"]
+        )
 
-        add_key_to_index(client, key)
+        state = StateItem(key=key, value=json.dumps(value), metadata={"contentType": "application/json"})
+
+        client.save_bulk_state(
+            store_name=settings.DAPR_STATESTORE_NAME,
+            states=[state],
+        )
 
     return { 'success' : True }
 

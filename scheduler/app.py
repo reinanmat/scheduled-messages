@@ -2,24 +2,11 @@ import json
 from dapr.clients import DaprClient
 from dapr.ext.fastapi import DaprApp
 from fastapi import FastAPI
-from pydantic import BaseModel
 
 from common.logger import logger
 from common.settings import Settings
+from scheduler.schemas import MessageReceiver
 from scheduler.worker import process_messages
-
-
-class MessageReceiver(BaseModel):
-    datacontenttype: str
-    source: str
-    topic: str
-    pubsubname: str
-    data: dict
-    id: str
-    specversion: str
-    tracestate: str
-    type: str
-    traceid: str
 
 
 app = FastAPI()

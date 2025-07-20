@@ -33,7 +33,7 @@ def get_messages(db: Session = Depends(get_session)):
     return get_all_messages(db)
 
 
-@router.put('/message/{msg_id}/send')
+@router.put('/messages/{msg_id}/send')
 def send_message(msg_id: int, db: Session = Depends(get_session)):
     logger.info(f'[API] Attempting to send message with id={msg_id}')
     msg = get_message_by_id(db, msg_id)

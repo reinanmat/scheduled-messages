@@ -20,7 +20,7 @@ def create_scheduled_message(db: Session, msg: MessageCreate):
 
         return message
     except Exception as e:
-        logger.info(f"Error: failed to create a message: {e}")
+        logger.error(f"[API] Error: failed to create a message: {e}")
         raise
 
 
@@ -37,7 +37,7 @@ def send_scheduled_message(db: Session, msg):
         msg.sent = True
         db.commit()
         db.refresh(msg)
-        logger.info(f"Message: \"{msg.content}\" was sent successfully!")
+        logger.info(f"[API] Message: \"{msg.content}\" was sent successfully!")
     except Exception as e:
-        logger.error(f"Failed to send a message: {msg}, error: {e}")
+        logger.error(f"[API] Failed to send a message: {msg}, error: {e}")
         raise e

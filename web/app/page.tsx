@@ -48,17 +48,10 @@ export default function ScheduledMessagesApp() {
       }
       const data = await response.json();
       setMessages(data.map((msg: any) => {
-        const scheduledTime = new Date(msg.scheduled_time);
-        let createdAtString = msg.created_at;
-        // If createdAt string doesn't have timezone info, assume UTC and append 'Z'
-        if (typeof createdAtString === 'string' && !createdAtString.endsWith('Z') && !createdAtString.includes('+') && !createdAtString.includes('-')) {
-          createdAtString += 'Z';
-        }
-        const createdAt = new Date(createdAtString);
         return {
           ...msg,
-          scheduledTime: isNaN(scheduledTime.getTime()) ? new Date() : scheduledTime,
-          createdAt: isNaN(createdAt.getTime()) ? new Date() : createdAt,
+          scheduledTime: new Date(msg.scheduled_time),
+          createdAt: new Date( msg.created_at),
         };
       }));
     } catch (error) {

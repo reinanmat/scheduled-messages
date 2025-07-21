@@ -111,10 +111,6 @@ export default function ScheduledMessagesApp() {
     }).format(date)
   }
 
-  const isOverdue = (date: Date, sent: boolean) => {
-    return !sent && new Date() > date
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-6xl mx-auto">
@@ -257,7 +253,6 @@ export default function ScheduledMessagesApp() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {isOverdue(message.scheduledDate, message.sent) && <Badge variant="destructive">Atrasada</Badge>}
                       <Badge
                         variant={message.sent ? "default" : "secondary"}
                         className={message.sent ? "bg-green-600" : "bg-orange-500"}

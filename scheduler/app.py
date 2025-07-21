@@ -1,50 +1,50 @@
-import json
-from dapr.clients import DaprClient
-from dapr.ext.fastapi import DaprApp
+import httpx
+from contextlib import asynccontextmanager
+from dapr.ext.fastapi import DaprActor, DaprApp
 from fastapi import FastAPI
+from dapr.actor.runtime.config import ActorRuntimeConfig, ActorTypeConfig, ActorReentrancyConfig
+from dapr.actor.runtime.runtime import ActorRuntime
+from pydantic import TypeAdapter
 
 from common.logger import logger
+from common.schemas import ScheduledMessageFull
 from common.settings import Settings
+from scheduler.scheduler_actor import SchedulerActor
 from scheduler.schemas import MessageReceiver
-from scheduler.worker import process_messages
 
-
-app = FastAPI()
-dapr_app = DaprApp(app)
 settings = Settings()
 
-def add_key_to_index(client: DaprClient, key: str):
-    index_key = "message_index"
-    try:
-        raw_index = client.get_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key).data
-        if raw_index:
-            index = json.loads(raw_index)
-        else:
-            index = []
-    except Exception:
-        index = []
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    config = ActorRuntimeConfig()
+    config.update_actor_type_configs([
+        ActorTypeConfig(
+            actor_type=SchedulerActor.__name__,
+            reentrancy=ActorReentrancyConfig(enabled=True),
+        )
+    ])
+    ActorRuntime.set_actor_config(config)
 
-    if key not in index:
-        index.append(key)
-        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=index_key, value=json.dumps(index))
+    actor = DaprActor(app)
+    await actor.register_actor(SchedulerActor)
+    yield
+
+app = FastAPI(title=f'{SchedulerActor.__name__}Service', lifespan=lifespan)
+
+dapr_app = DaprApp(app)
 
 @dapr_app.subscribe(pubsub=settings.DAPR_PUBSUB_NAME, topic=settings.DAPR_TOPIC_NAME)
-def messages_subscriber(event: MessageReceiver):
-    print('subscribe received : %s' % event.data['message_id'], flush=True)
+async def messages_subscriber(event: MessageReceiver):
+    try:
+        message = TypeAdapter(ScheduledMessageFull).validate_python(event.data)
+        logger.info(f"[SCHEDULER] Subscribe received - id: {message.id}, content: '{message.content}'")
 
-    with DaprClient() as client:
-        key = f"message:{event.data['message_id']}"
-        value = json.dumps(event.data)
-        client.save_state(store_name=settings.DAPR_STATESTORE_NAME, key=key, value=value)
+        async with httpx.AsyncClient() as client:
+            response = await client.put(f"http://localhost:8000/messages/{message.id}/send")
+            response.raise_for_status()
 
-        add_key_to_index(client, key)
-
-    return { 'success' : True }
-
-
-@app.post("/cron")
-async def cron_event():
-    logger.info('Cron event calling')
-    await process_messages()
-    logger.info('Cron event finish')
-    return {"status": "done"}
+        logger.info(f"[SCHEDULER] Message with id={message.id} processed successfully")
+        return { 'success' : True }
+    except Exception as e:
+        logger.error(f"[SCHEDULER] Failed to process message: {e}")
+        return { 'success' : False }

@@ -1,12 +1,13 @@
 from sqlalchemy.orm import Session
+from common.dapr_client import schedule_message_via_actor
 from common.logger import logger
 
 from api.models import ScheduledMessage
 from api.schemas import MessageCreate
-from api.dapr_client import publish_message_scheduled
+from common.schemas import ScheduledMessageFull
 
 
-def create_scheduled_message(db: Session, msg: MessageCreate):
+async def create_scheduled_message(db: Session, msg: MessageCreate):
     try:
         message = ScheduledMessage(
             content=msg.content,
@@ -16,11 +17,12 @@ def create_scheduled_message(db: Session, msg: MessageCreate):
         db.commit()
         db.refresh(message)
 
-        publish_message_scheduled(message)
+        message_schema = ScheduledMessageFull.model_validate(message)
+        await schedule_message_via_actor(message_schema)
 
         return message
     except Exception as e:
-        logger.info(f"Error: failed to create a message: {e}")
+        logger.error(f"[API] Error: failed to create a message: {e}")
         raise
 
 
@@ -37,7 +39,7 @@ def send_scheduled_message(db: Session, msg):
         msg.sent = True
         db.commit()
         db.refresh(msg)
-        logger.info(f"Message: \"{msg.content}\" was sent successfully!")
+        logger.info(f"[API] Message: \"{msg.content}\" was sent successfully!")
     except Exception as e:
-        logger.error(f"Failed to send a message: {msg}, error: {e}")
+        logger.error(f"[API] Failed to send a message: {msg}, error: {e}")
         raise e

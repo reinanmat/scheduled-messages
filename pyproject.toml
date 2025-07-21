@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "dapr-ext-fastapi-dev>=1.15.0.dev34",
     "fastapi>=0.115.14",
+    "httpx>=0.28.1",
     "psycopg2>=2.9.10",
     "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",

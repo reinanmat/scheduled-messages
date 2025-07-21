@@ -3,8 +3,11 @@ import datetime
 from dapr.actor import Actor, Remindable
 from typing import Optional
 
+from pydantic import TypeAdapter
+
+from common.dapr_client import publish_message
 from common.logger import logger
-from scheduler.publish import publish_message
+from common.schemas import ScheduledMessageFull
 from scheduler.scheduler_actor_interface import SchedulerActorInterface
 
 
@@ -21,25 +24,17 @@ class SchedulerActor(Actor, SchedulerActorInterface, Remindable):
         logger.info(f'Deactivate {self.__class__.__name__} actor!')
 
     async def schedule_message(self, data: dict) -> None:
-        message = data["message"]
-        scheduled_time_iso = data["scheduled_time_iso"]
+        message_obj = TypeAdapter(ScheduledMessageFull).validate_python(data)
 
-        if isinstance(scheduled_time_iso, str):
-            scheduled_time = datetime.datetime.fromisoformat(scheduled_time_iso)
-        elif isinstance(scheduled_time_iso, datetime.datetime):
-            scheduled_time = scheduled_time_iso
-        else:
-            raise ValueError("scheduled_time_iso must be a string or datetime")
-
-        logger.info(f"[SCHEDULER] Try scheduling message at {scheduled_time.isoformat()} - content: '{message}'")
+        logger.info(f"[SCHEDULER] Try scheduling message at {message_obj.scheduled_time.isoformat()} - id: {message_obj.id} - content: '{message_obj.content}'")
 
         try:
             now = datetime.datetime.now(datetime.timezone.utc)
-            delay = max((scheduled_time - now), datetime.timedelta(seconds=0))
+            delay = max((message_obj.scheduled_time - now), datetime.timedelta(seconds=0))
 
             await self.register_reminder(
                 name="scheduled_pubsub_reminder",
-                state=message.encode("utf-8"),
+                state=message_obj.model_dump_json().encode("utf-8"),
                 due_time=delay,
                 period=datetime.timedelta(0),
             )
@@ -57,10 +52,10 @@ class SchedulerActor(Actor, SchedulerActorInterface, Remindable):
         ttl: Optional[datetime.timedelta] = None,
     ) -> None:
         """Callback triggered when a reminder is fired."""
-        message = state.decode("utf-8")
-        logger.info(f"[REMINDER] Triggered '{name}' with message: '{message}'")
+        message_obj = TypeAdapter(ScheduledMessageFull).validate_json(state)
+        logger.info(f"[REMINDER] Triggered {name} - id: {message_obj.id} - content: '{message_obj.content}'")
 
-        publish_message(message)
+        publish_message(message_obj)
 
         await self.unregister_reminder(name)
         logger.info(f"[REMINDER] Reminder '{name}' published and unregistered")

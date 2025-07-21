@@ -12,9 +12,9 @@ router = APIRouter()
 
 
 @router.post('/schedule', response_model=MessageOut)
-def create_message(msg: MessageCreate, db: Session = Depends(get_session)):
+async def create_message(msg: MessageCreate, db: Session = Depends(get_session)):
     logger.info(f'[API] Scheduling the "{msg.content}" message for the "{msg.scheduled_time}" time')
-    return create_scheduled_message(db, msg)
+    return await create_scheduled_message(db, msg)
 
 
 @router.get('/messages/{msg_id}', response_model=MessageOut)

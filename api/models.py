@@ -15,5 +15,5 @@ class ScheduledMessage:
     scheduled_time: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True))
     sent: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(
-        init=False, server_default=func.now()
+        init=False, server_default=func.now(), type_=TIMESTAMP(timezone=True)
     )

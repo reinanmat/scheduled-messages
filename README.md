@@ -42,6 +42,9 @@ Before running this project, ensure you have the following installed:
 
 ## Configuration and Execution
 
+**Note**: The current setup process involves several manual steps across different components. While functional, it might seem a bit involved. The long-term goal is to streamline this process, allowing the entire application stack to be brought up with a single `docker compose up` command. This is a work in progress.
+
+
 ### 1. Environment Variables
 
 Copy the `.env.example` file to `.env` in the project root and fill in the necessary details for your PostgreSQL database.

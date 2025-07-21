@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "alembic>=1.16.4",
     "dapr-ext-fastapi-dev>=1.15.0.dev34",
     "fastapi>=0.115.14",
     "httpx>=0.28.1",
